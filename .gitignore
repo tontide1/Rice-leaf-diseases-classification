@@ -1,3 +1,10 @@
+data.zip
+data/bacterial_leaf_blight
+data/brown_spot
+data/healthy
+data/leaf_blast
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
