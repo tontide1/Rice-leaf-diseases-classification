@@ -2,7 +2,7 @@
 
 ## Giới Thiệu
 
-File `scripts/train_mobilenet_bot.py` được sử dụng để huấn luyện mô hình MobileNetV3-Small với BoT (Bottleneck Transformer) block trên tập dữ liệu Paddy Disease Classification.
+File `train_MobileNetV3_Small_BoT.py` được sử dụng để huấn luyện mô hình MobileNetV3-Small với BoT (Bottleneck Transformer) block trên tập dữ liệu Paddy Disease Classification.
 
 ## Yêu Cầu
 
@@ -16,14 +16,18 @@ Paddy-Disease-Classification-final/
 │   ├── metadata.csv
 │   ├── label2id.json
 │   └── images/
-├── scripts/
-│   └── train_mobilenet_bot.py
+├── train_MobileNetV3_Small_BoT.py
 ├── src/
 │   ├── models/
-│   │   └── backbones.py
+│   │   └── backbones/
+│   │       └── mobilenet.py
 │   ├── training/
+│   │   ├── train.py
+│   │   └── param_groups.py
 │   └── utils/
-└── checkpoints/
+│       ├── data/
+│       └── metrics/
+└── results/
 ```
 
 ### 2. Dữ Liệu Cần Thiết
@@ -37,13 +41,13 @@ Paddy-Disease-Classification-final/
 ### 1. Training Cơ Bản
 
 ```bash
-python scripts/train_mobilenet_bot.py
+python train_MobileNetV3_Small_BoT.py
 ```
 
 ### 2. Training với Tham Số Tùy Chỉnh
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 20 \
     --batch-size 32 \
     --base-lr 1e-4 \
@@ -54,7 +58,7 @@ python scripts/train_mobilenet_bot.py \
 ### 3. Quick Test (Training Nhanh với Dữ Liệu Giới Hạn)
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 2 \
     --batch-size 16 \
     --train-limit 100 \
@@ -109,12 +113,19 @@ python scripts/train_mobilenet_bot.py \
 | `--device` | auto | Device (cpu/cuda) |
 | `--seed` | 42 | Random seed |
 
+### Visualization & Logging
+
+| Tham số | Mặc định | Mô tả |
+|---------|----------|-------|
+| `--plot` | False | Hiển thị biểu đồ training history sau khi train |
+| `--save-history` | False | Lưu training history vào file JSON |
+
 ## Ví Dụ Thực Tế
 
-### 1. Training Full Dataset với Pretrained Weights
+### 1. Training Full Dataset với Pretrained Weights (Khuyến Nghị)
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 30 \
     --batch-size 64 \
     --base-lr 5e-5 \
@@ -124,13 +135,21 @@ python scripts/train_mobilenet_bot.py \
     --pretrained \
     --num-workers 8 \
     --pin-memory \
-    --image-size 224
+    --image-size 224 \
+    --plot \
+    --save-history
 ```
+
+**Kết quả mong đợi:**
+
+- Validation Accuracy: ~99.3%
+- Training time: ~30-45 phút (GPU T4)
+- Output: `MobileNetV3_Small_BoT_best.pt`, `results/MobileNetV3_Small_BoT_history.json`
 
 ### 2. Training từ Scratch
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 50 \
     --batch-size 32 \
     --base-lr 1e-3 \
@@ -143,7 +162,7 @@ python scripts/train_mobilenet_bot.py \
 ### 3. Training với GPU Cụ Thể
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 python scripts/train_mobilenet_bot.py \
+CUDA_VISIBLE_DEVICES=0 python train_MobileNetV3_Small_BoT.py \
     --epochs 20 \
     --batch-size 32 \
     --pretrained \
@@ -153,7 +172,7 @@ CUDA_VISIBLE_DEVICES=0 python scripts/train_mobilenet_bot.py \
 ### 4. Training trên CPU
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 5 \
     --batch-size 8 \
     --device cpu \
@@ -163,7 +182,7 @@ python scripts/train_mobilenet_bot.py \
 ### 5. Fine-tuning với Learning Rate Thấp
 
 ```bash
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --epochs 20 \
     --batch-size 32 \
     --base-lr 1e-5 \
@@ -172,24 +191,44 @@ python scripts/train_mobilenet_bot.py \
     --patience 8
 ```
 
+### 6. Training với Visualization
+
+```bash
+python train_MobileNetV3_Small_BoT.py \
+    --epochs 30 \
+    --batch-size 64 \
+    --pretrained \
+    --plot \
+    --save-history
+```
+
+Sẽ tạo:
+
+- Biểu đồ training loss/accuracy
+- File `results/MobileNetV3_Small_BoT_history.json`
+- File `results/MobileNetV3_Small_BoT_metrics.json`
+
 ## Đầu Ra
 
 ### 1. Checkpoint Files
 
-Model checkpoint sẽ được lưu trong thư mục `checkpoints/`:
+Model checkpoint sẽ được lưu trong thư mục gốc project:
 
-- `checkpoints/MobileNetV3_Small_BoT_best.pth`: Best model (lowest validation loss)
+- `MobileNetV3_Small_BoT_best.pt`: Best model checkpoint
 
 ### 2. Training Metrics
 
 Sau khi training, metrics sẽ được in ra console:
 
-```
+```plaintext
 Training finished. Metrics:
-  best_epoch: 15
-  best_valid_loss: 0.234
-  best_valid_acc: 0.952
-  train_time: 1234.56
+  model_name: MobileNetV3_Small_BoT
+  size_mb: 6.67
+  valid_acc: 0.9933
+  valid_f1: 0.9933
+  fps: 3969.14
+  num_params: 1748980
+  ckpt_path: MobileNetV3_Small_BoT_best.pt
 ```
 
 ### 3. Training History
@@ -202,6 +241,16 @@ Training history được trả về dưới dạng dictionary chứa:
 - `valid_acc`: List các giá trị validation accuracy
 - `learning_rates`: List các learning rates theo epoch
 
+### 4. Expected Results
+
+Với cấu hình tối ưu (pretrained, 30 epochs, batch_size=64), bạn có thể đạt:
+
+- **Validation Accuracy**: ~99.3%
+- **F1-Score**: ~99.3%
+- **Inference Speed**: ~3,969 FPS
+- **Model Size**: ~6.67 MB
+- **Training Time**: ~30-45 phút (GPU T4)
+
 ## Troubleshooting
 
 ### Lỗi: "FileNotFoundError: metadata file not found"
@@ -210,7 +259,7 @@ Training history được trả về dưới dạng dictionary chứa:
 
 ```bash
 # Chỉ định đúng đường dẫn
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --metadata path/to/your/metadata.csv \
     --label2id path/to/your/label2id.json
 ```
@@ -228,10 +277,10 @@ python scripts/train_mobilenet_bot.py \
 
 ```bash
 # Giảm batch size
-python scripts/train_mobilenet_bot.py --batch-size 16
+python train_MobileNetV3_Small_BoT.py --batch-size 16
 
 # Hoặc giảm image size
-python scripts/train_mobilenet_bot.py --image-size 192
+python train_MobileNetV3_Small_BoT.py --image-size 192
 ```
 
 ### Training Quá Chậm
@@ -240,12 +289,12 @@ python scripts/train_mobilenet_bot.py --image-size 192
 
 ```bash
 # Tăng số workers
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --num-workers 8 \
     --pin-memory
 
 # Hoặc test với subset nhỏ
-python scripts/train_mobilenet_bot.py \
+python train_MobileNetV3_Small_BoT.py \
     --train-limit 1000 \
     --valid-limit 200
 ```
@@ -282,11 +331,40 @@ Theo dõi các chỉ số trong quá trình training:
 - Loss tăng: Learning rate quá cao hoặc overfitting
 - Accuracy không cải thiện: Learning rate quá thấp hoặc model capacity không đủ
 
-## Tham Khảo Thêm
+## Kiến Trúc Model
 
-- Model Architecture: `src/models/backbones.py`
-- Training Logic: `src/training/trainer.py`
-- Data Processing: `src/utils/data/`
+### MobileNetV3-Small BoT
+
+```
+Input (3x224x224)
+    ↓
+[MobileNetV3-Small Backbone] (pretrained on ImageNet)
+    ↓
+Feature Maps (576 channels)
+    ↓
+[BoTNet Block] (Self-Attention with 4 heads)
+    ↓
+[AdaptiveAvgPool2d]
+    ↓
+[Dropout 0.1]
+    ↓
+[Linear Classifier] → Output (num_classes)
+```
+
+**Đặc điểm:**
+
+- Backbone: MobileNetV3-Small (efficient, lightweight)
+- Attention: BoTNet block với multi-head self-attention
+- Parameters: ~1.75M
+- Size: ~6.67 MB
+- Optimal for: Mobile deployment, real-time inference
+
+## Tham Khảo
+
+- Model Implementation: `src/models/backbones/mobilenet.py` (class `MobileNetV3_Small_BoT`)
+- Training Logic: `src/training/train.py`
+- Data Loading: `src/utils/data/loading.py`
+- BoTNet Block: `src/models/attention/botblock.py`
 
 ## License
 

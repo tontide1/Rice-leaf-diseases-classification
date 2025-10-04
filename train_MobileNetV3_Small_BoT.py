@@ -33,6 +33,10 @@ from src.utils.metrics.plot import plot_history  # noqa: E402
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train MobileNetV3-Small BoT on Paddy dataset")
+    # parser.add_argument("--metadata", type=Path, default=Path(__file__).parent / "data/metadata.csv",
+    #                     help="Path to metadata CSV")
+    # parser.add_argument("--label2id", type=Path, default=Path(__file__).parent / "data/label2id.json",
+    #                     help="Path to label2id JSON")
     parser.add_argument("--metadata", type=Path, default=Path(__file__).parent / "data/metadata.csv",
                         help="Path to metadata CSV")
     parser.add_argument("--label2id", type=Path, default=Path(__file__).parent / "data/label2id.json",
