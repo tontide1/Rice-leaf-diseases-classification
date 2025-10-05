@@ -158,6 +158,36 @@ class MobileNetV3_Small_ECA(nn.Module):
     def get_classifier(self):
         return self.fc
 
+class MobileNetV3_Small_Vanilla(nn.Module):
+    """
+    Baseline MobileNetV3-Small without any attention mechanism.
+    Pure CNN for direct comparison with attention-enhanced variants.
+    """
+    def __init__(self, num_classes=4, pretrained=True, dropout: float = 0.1):
+        super().__init__()
+        self.backbone = timm.create_model(
+            "mobilenetv3_small_100",
+            pretrained=pretrained,
+            num_classes=0
+        )
+        self.out_channels = self.backbone.num_features
+        
+        # No attention blocks - pure CNN baseline
+        self.pool = nn.AdaptiveAvgPool2d(1)
+        self.dropout = nn.Dropout(dropout) if dropout and dropout > 0 else nn.Identity()
+        self.fc = nn.Linear(self.out_channels, num_classes)
+
+    def forward(self, x):
+        x = self.backbone.forward_features(x)
+        # Direct pooling without attention
+        x = self.pool(x).flatten(1)
+        x = self.dropout(x)
+        return self.fc(x)
+    
+    def get_classifier(self):
+        return self.fc
+
+
 class MobileViT_XXS(nn.Module):
     def __init__(self, num_classes, image_size=224, pretrained=True, dropout: float = 0.0):
         super().__init__()

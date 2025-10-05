@@ -152,7 +152,7 @@ python train_MobileNetV3_Small_Hybrid.py \
     --weight-decay 1e-2 \
     --patience 10 \
     --pretrained \
-    --num-workers 8 \
+    --num-workers 4 \
     --pin-memory \
     --image-size 224 \
     --save-history

@@ -4,6 +4,7 @@ from .mobilenet import (
     MobileNetV3_Small_CA,
     MobileNetV3_Small_Hybrid,
     MobileNetV3_Small_ECA,
+    MobileNetV3_Small_Vanilla,
     MobileViT_XXS
 )
 
@@ -18,6 +19,7 @@ __all__ = [
     'MobileNetV3_Small_CA',
     'MobileNetV3_Small_Hybrid',
     'MobileNetV3_Small_ECA',
+    'MobileNetV3_Small_Vanilla',
     'MobileViT_XXS',
     'ResNet18_BoT',
     'ResNet18_BoTLinear',
