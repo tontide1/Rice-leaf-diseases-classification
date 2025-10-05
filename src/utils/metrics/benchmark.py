@@ -14,22 +14,65 @@ def confusion(y_true, y_pred, normalize=None):
     return cm
 
 @torch.inference_mode()
-def fps(model, batch_size, image_size, steps=20, warmup=10):
+def fps(model, batch_size, image_size, steps=100, warmup=20):
+    """
+    Đo FPS (Frames Per Second) của model.
+    
+    Args:
+        model: Model cần đo
+        batch_size: Batch size để test
+        image_size: Kích thước ảnh (H=W)
+        steps: Số lần inference để đo (default=100, tăng từ 20)
+        warmup: Số lần warmup GPU (default=20, tăng từ 10)
+    
+    Returns:
+        fps: Frames per second (số ảnh xử lý được trong 1 giây)
+    """
     device = next(model.parameters()).device
     model.eval()
 
+    # Tạo dummy input
     x = torch.randn(batch_size, 3, image_size, image_size, device=device)
-    if device.type == "cuda": torch.cuda.synchronize()
+    
+    # Warmup: cho GPU "nóng máy" trước khi đo
+    if device.type == "cuda": 
+        torch.cuda.synchronize()
     for _ in range(warmup):
         _ = model(x)
-    if device.type == "cuda": torch.cuda.synchronize()
-    t0 = time.time()
-    for _ in range(steps):
-        _ = model(x)
-    if device.type == "cuda": torch.cuda.synchronize()
-    t1 = time.time()
-    imgs = steps * batch_size
-    return imgs / (t1 - t0)
+    if device.type == "cuda": 
+        torch.cuda.synchronize()
+    
+    # Đo thời gian chính xác
+    if device.type == "cuda":
+        # Sử dụng CUDA events để đo chính xác trên GPU
+        start_event = torch.cuda.Event(enable_timing=True)
+        end_event = torch.cuda.Event(enable_timing=True)
+        
+        torch.cuda.synchronize()
+        start_event.record()
+        
+        for _ in range(steps):
+            _ = model(x)
+        
+        end_event.record()
+        torch.cuda.synchronize()
+        
+        # Elapsed time in milliseconds
+        elapsed_ms = start_event.elapsed_time(end_event)
+        elapsed_sec = elapsed_ms / 1000.0
+    else:
+        # CPU timing
+        t0 = time.time()
+        for _ in range(steps):
+            _ = model(x)
+        t1 = time.time()
+        elapsed_sec = t1 - t0
+    
+    # Tính FPS
+    total_images = steps * batch_size
+    fps_value = total_images / elapsed_sec
+    
+    return fps_value
 
 @torch.no_grad()
 def predict(model, loader, MEAN=None, STD=None):

@@ -3,7 +3,6 @@ data/bacterial_leaf_blight
 data/brown_spot
 data/healthy
 data/leaf_blast
-
 *zip
 # Byte-compiled / optimized / DLL files
 __pycache__/

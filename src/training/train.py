@@ -116,7 +116,8 @@ def train_model(model_name, model, train_loader, valid_loader, criterion, optimi
     model.load_state_dict(ckpt["model"])
 
     _, valid_acc, valid_f1 = evaluate(model, valid_loader, criterion, MEAN, STD)
-    fps_value = fps(model, 32, fps_image_size)
+    # Đo FPS với batch=16, steps=100 (tăng từ batch=32, steps=20)
+    fps_value = fps(model, 16, fps_image_size, steps=100, warmup=20)
 
     num_params = sum(p.numel() for p in model.parameters())
     model_size_mb = sum(p.numel()*p.element_size() for p in model.parameters())/(1024**2)
