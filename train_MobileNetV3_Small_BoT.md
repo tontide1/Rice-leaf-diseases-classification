@@ -118,7 +118,7 @@ python train_MobileNetV3_Small_BoT.py \
 | Tham số | Mặc định | Mô tả |
 |---------|----------|-------|
 | `--plot` | False | Hiển thị biểu đồ training history sau khi train |
-| `--save-history` | False | Lưu training history vào file JSON |
+| `--save-history` | False | Tự động lưu: history JSON + metrics JSON + biểu đồ PNG (DPI 300) |
 
 ## Ví Dụ Thực Tế
 
@@ -136,7 +136,6 @@ python train_MobileNetV3_Small_BoT.py \
     --num-workers 8 \
     --pin-memory \
     --image-size 224 \
-    --plot \
     --save-history
 ```
 
@@ -144,7 +143,11 @@ python train_MobileNetV3_Small_BoT.py \
 
 - Validation Accuracy: ~99.3%
 - Training time: ~30-45 phút (GPU T4)
-- Output: `MobileNetV3_Small_BoT_best.pt`, `results/MobileNetV3_Small_BoT_history.json`
+- **Output files:**
+  - `MobileNetV3_Small_BoT_best.pt` - Model checkpoint
+  - `results/MobileNetV3_Small_BoT_history.json` - Training history
+  - `results/MobileNetV3_Small_BoT_metrics.json` - Final metrics
+  - `results/MobileNetV3_Small_BoT_training_plot.png` - Training curves (DPI 300)
 
 ### 2. Training từ Scratch
 
@@ -191,32 +194,72 @@ python train_MobileNetV3_Small_BoT.py \
     --patience 8
 ```
 
-### 6. Training với Visualization
+### 6. Training với Auto-Save và Display
 
 ```bash
 python train_MobileNetV3_Small_BoT.py \
     --epochs 30 \
     --batch-size 64 \
     --pretrained \
-    --plot \
-    --save-history
+    --save-history \
+    --plot
 ```
 
-Sẽ tạo:
+**Với `--save-history`, tự động lưu:**
 
-- Biểu đồ training loss/accuracy
-- File `results/MobileNetV3_Small_BoT_history.json`
-- File `results/MobileNetV3_Small_BoT_metrics.json`
+- ✅ `results/MobileNetV3_Small_BoT_history.json` - Training history (loss & accuracy per epoch)
+- ✅ `results/MobileNetV3_Small_BoT_metrics.json` - Final metrics (accuracy, F1, FPS, size, params)
+- ✅ `results/MobileNetV3_Small_BoT_training_plot.png` - High-res plot (DPI 300)
+
+**Với `--plot`, thêm:**
+
+- 📊 Hiển thị biểu đồ realtime trong cửa sổ popup
 
 ## Đầu Ra
 
-### 1. Checkpoint Files
+### 1. Model Checkpoint
 
-Model checkpoint sẽ được lưu trong thư mục gốc project:
+Checkpoint được lưu trong thư mục gốc:
 
-- `MobileNetV3_Small_BoT_best.pt`: Best model checkpoint
+- `MobileNetV3_Small_BoT_best.pt` - Best model (lowest validation loss)
 
-### 2. Training Metrics
+### 2. Results Files (với `--save-history`)
+
+Tự động lưu trong thư mục `results/`:
+
+```
+results/
+├── MobileNetV3_Small_BoT_history.json        # Training curves data
+├── MobileNetV3_Small_BoT_metrics.json        # Final performance metrics
+└── MobileNetV3_Small_BoT_training_plot.png   # Visualization (DPI 300)
+```
+
+#### `*_history.json` format
+
+```json
+{
+  "train_loss": [0.523, 0.234, 0.156, ...],
+  "valid_loss": [0.489, 0.298, 0.201, ...],
+  "train_acc": [0.854, 0.921, 0.945, ...],
+  "valid_acc": [0.867, 0.912, 0.933, ...]
+}
+```
+
+#### `*_metrics.json` format
+
+```json
+{
+  "model_name": "MobileNetV3_Small_BoT",
+  "size_mb": 6.67,
+  "valid_acc": 0.9933,
+  "valid_f1": 0.9933,
+  "fps": 3969.14,
+  "num_params": 1748980,
+  "ckpt_path": "MobileNetV3_Small_BoT_best.pt"
+}
+```
+
+### 3. Console Output
 
 Sau khi training, metrics sẽ được in ra console:
 

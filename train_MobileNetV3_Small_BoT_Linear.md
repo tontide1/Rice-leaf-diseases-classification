@@ -143,7 +143,7 @@ python train_MobileNetV3_Small_BoT_Linear.py \
 | Tham số | Mặc định | Mô tả |
 |---------|----------|-------|
 | `--plot` | False | Hiển thị biểu đồ training history sau khi train |
-| `--save-history` | False | Lưu training history vào file JSON |
+| `--save-history` | False | Tự động lưu: history JSON + metrics JSON + biểu đồ PNG (DPI 300) |
 
 ## Ví Dụ Thực Tế
 
@@ -161,7 +161,6 @@ python train_MobileNetV3_Small_BoT_Linear.py \
     --num-workers 8 \
     --pin-memory \
     --image-size 224 \
-    --plot \
     --save-history
 ```
 
@@ -170,7 +169,11 @@ python train_MobileNetV3_Small_BoT_Linear.py \
 - Validation Accuracy: ~99.3-99.4%
 - Training time: ~28-40 phút (GPU T4, nhanh hơn standard BoT ~10-15%)
 - FPS: ~4,200+ (cao hơn standard BoT ~5-10%)
-- Output: `MobileNetV3_Small_BoT_Linear_best.pt`, `results/MobileNetV3_Small_BoT_Linear_history.json`
+- **Output files:**
+  - `MobileNetV3_Small_BoT_Linear_best.pt` - Model checkpoint
+  - `results/MobileNetV3_Small_BoT_Linear_history.json` - Training history
+  - `results/MobileNetV3_Small_BoT_Linear_metrics.json` - Final metrics
+  - `results/MobileNetV3_Small_BoT_Linear_training_plot.png` - Training curves (DPI 300)
 
 **Ưu điểm batch_size=80:**
 
@@ -252,22 +255,26 @@ python train_MobileNetV3_Small_BoT_Linear.py \
     --train-limit 1000
 ```
 
-### 7. Training với Visualization
+### 7. Training với Auto-Save và Display
 
 ```bash
 python train_MobileNetV3_Small_BoT_Linear.py \
     --epochs 30 \
     --batch-size 80 \
     --pretrained \
-    --plot \
-    --save-history
+    --save-history \
+    --plot
 ```
 
-Sẽ tạo:
+**Với `--save-history`, tự động lưu:**
 
-- Biểu đồ training loss/accuracy
-- File `results/MobileNetV3_Small_BoT_Linear_history.json`
-- File `results/MobileNetV3_Small_BoT_Linear_metrics.json`
+- ✅ `results/MobileNetV3_Small_BoT_Linear_history.json` - Training history
+- ✅ `results/MobileNetV3_Small_BoT_Linear_metrics.json` - Final metrics  
+- ✅ `results/MobileNetV3_Small_BoT_Linear_training_plot.png` - High-res plot (DPI 300)
+
+**Với `--plot`, thêm:**
+
+- 📊 Hiển thị biểu đồ realtime
 
 ### 8. Memory-Efficient Training
 
@@ -283,13 +290,24 @@ python train_MobileNetV3_Small_BoT_Linear.py \
 
 ## Đầu Ra
 
-### 1. Checkpoint Files
+### 1. Model Checkpoint
 
-Model checkpoint sẽ được lưu trong thư mục gốc project:
+Checkpoint được lưu trong thư mục gốc:
 
-- `MobileNetV3_Small_BoT_Linear_best.pt`: Best model checkpoint
+- `MobileNetV3_Small_BoT_Linear_best.pt` - Best model
 
-### 2. Training Metrics
+### 2. Results Files (với `--save-history`)
+
+Tự động lưu trong `results/`:
+
+```plaintext
+results/
+├── MobileNetV3_Small_BoT_Linear_history.json
+├── MobileNetV3_Small_BoT_Linear_metrics.json
+└── MobileNetV3_Small_BoT_Linear_training_plot.png
+```
+
+### 3. Console Output
 
 Sau khi training, metrics sẽ được in ra console:
 

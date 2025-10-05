@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Optional
 import json
+from datetime import datetime
 
 import torch
 from torch import nn
@@ -29,6 +30,14 @@ from src.utils.data import (  # noqa: E402
     build_datasets,
 )
 from src.utils.metrics.plot import plot_history  # noqa: E402
+
+try:
+    import matplotlib
+    matplotlib.use('Agg')  # Non-interactive backend for saving plots
+    import matplotlib.pyplot as plt
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
 
 
 def parse_args() -> argparse.Namespace:
@@ -186,26 +195,63 @@ def main() -> None:
 
     # Save history to JSON
     if args.save_history:
-        history_file = Path("results") / f"{args.model_name}_history.json"
-        history_file.parent.mkdir(parents=True, exist_ok=True)
+        # Create timestamped results directory
+        timestamp = datetime.now().strftime("%d_%m_%Y_%H%M")
+        run_dir = Path("results") / f"{args.model_name}_{timestamp}"
+        run_dir.mkdir(parents=True, exist_ok=True)
         
-        # Convert numpy arrays to lists for JSON serialization
+        print(f"\n📁 Saving results to: {run_dir}")
+        
+        # Save training history
+        history_file = run_dir / "history.json"
         history_serializable = {
             key: [float(v) for v in value] if hasattr(value, '__iter__') else value
             for key, value in history.items()
         }
-        
         with open(history_file, 'w') as f:
             json.dump(history_serializable, f, indent=2)
-        print(f"Training history saved to: {history_file}")
+        print(f"✓ Training history saved to: {history_file}")
+        
+        # Save final metrics
+        metrics_file = run_dir / "metrics.json"
+        metrics_serializable = {
+            key: float(value) if isinstance(value, (int, float)) else value
+            for key, value in metrics.items()
+        }
+        with open(metrics_file, 'w') as f:
+            json.dump(metrics_serializable, f, indent=2)
+        print(f"✓ Final metrics saved to: {metrics_file}")
+        
+        # Save training plot
+        if MATPLOTLIB_AVAILABLE:
+            try:
+                plot_file = run_dir / "training_plot.png"
+                plot_history(
+                    history, 
+                    title=f"{args.model_name} Training History (Acc: {metrics['valid_acc']:.2%})"
+                )
+                plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+                plt.close()
+                print(f"✓ Training plot saved to: {plot_file}")
+            except Exception as e:
+                print(f"⚠ Could not save plot: {e}")
+        else:
+            print("⚠ Matplotlib not available, skipping plot save")
+        
+        print(f"\n✅ All results saved to: {run_dir}\n")
 
-    # Plot training history
+    # Plot training history (display only)
     if args.plot:
-        print("Plotting training history...")
-        plot_history(
-            history, 
-            title=f"{args.model_name} Training History (Acc: {metrics['valid_acc']:.2%})"
-        )
+        print("\nDisplaying training plot...")
+        try:
+            plot_history(
+                history, 
+                title=f"{args.model_name} Training History (Acc: {metrics['valid_acc']:.2%})"
+            )
+            if MATPLOTLIB_AVAILABLE:
+                plt.show()
+        except Exception as e:
+            print(f"⚠ Could not display plot: {e}")
 
 
 if __name__ == "__main__":

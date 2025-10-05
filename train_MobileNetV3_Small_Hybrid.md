@@ -134,7 +134,7 @@ python train_MobileNetV3_Small_Hybrid.py \
 | Tham số | Mặc định | Mô tả |
 |---------|----------|-------|
 | `--plot` | False | Hiển thị biểu đồ training history sau khi train |
-| `--save-history` | False | Lưu training history vào file JSON |
+| `--save-history` | False | Tự động lưu: history JSON + metrics JSON + biểu đồ PNG (DPI 300) |
 
 ## Ví Dụ Thực Tế
 
@@ -155,7 +155,6 @@ python train_MobileNetV3_Small_Hybrid.py \
     --num-workers 8 \
     --pin-memory \
     --image-size 224 \
-    --plot \
     --save-history
 ```
 
@@ -163,7 +162,11 @@ python train_MobileNetV3_Small_Hybrid.py \
 
 - Validation Accuracy: ~99.3-99.5% (có thể cao hơn BoT model)
 - Training time: ~35-50 phút (GPU T4, lâu hơn BoT ~10-15%)
-- Output: `MobileNetV3_Small_Hybrid_best.pt`, `results/MobileNetV3_Small_Hybrid_history.json`
+- **Output files:**
+  - `MobileNetV3_Small_Hybrid_best.pt` - Model checkpoint
+  - `results/MobileNetV3_Small_Hybrid_history.json` - Training history
+  - `results/MobileNetV3_Small_Hybrid_metrics.json` - Final metrics
+  - `results/MobileNetV3_Small_Hybrid_training_plot.png` - Training curves (DPI 300)
 
 ### 2. Training từ Scratch
 
@@ -224,22 +227,26 @@ python train_MobileNetV3_Small_Hybrid.py \
     --train-limit 1000
 ```
 
-### 6. Training với Visualization
+### 6. Training với Auto-Save và Display
 
 ```bash
 python train_MobileNetV3_Small_Hybrid.py \
     --epochs 30 \
     --batch-size 64 \
     --pretrained \
-    --plot \
-    --save-history
+    --save-history \
+    --plot
 ```
 
-Sẽ tạo:
+**Với `--save-history`, tự động lưu:**
 
-- Biểu đồ training loss/accuracy
-- File `results/MobileNetV3_Small_Hybrid_history.json`
-- File `results/MobileNetV3_Small_Hybrid_metrics.json`
+- ✅ `results/MobileNetV3_Small_Hybrid_history.json` - Training history
+- ✅ `results/MobileNetV3_Small_Hybrid_metrics.json` - Final metrics
+- ✅ `results/MobileNetV3_Small_Hybrid_training_plot.png` - High-res plot (DPI 300)
+
+**Với `--plot`, thêm:**
+
+- 📊 Hiển thị biểu đồ realtime
 
 ### 7. Fine-tuning với Dropout Cao
 
@@ -256,13 +263,24 @@ python train_MobileNetV3_Small_Hybrid.py \
 
 ## Đầu Ra
 
-### 1. Checkpoint Files
+### 1. Model Checkpoint
 
-Model checkpoint sẽ được lưu trong thư mục gốc project:
+Checkpoint được lưu trong thư mục gốc:
 
-- `MobileNetV3_Small_Hybrid_best.pt`: Best model checkpoint
+- `MobileNetV3_Small_Hybrid_best.pt` - Best model
 
-### 2. Training Metrics
+### 2. Results Files (với `--save-history`)
+
+Tự động lưu trong `results/`:
+
+```plaintext
+results/
+├── MobileNetV3_Small_Hybrid_history.json
+├── MobileNetV3_Small_Hybrid_metrics.json
+└── MobileNetV3_Small_Hybrid_training_plot.png
+```
+
+### 3. Console Output
 
 Sau khi training, metrics sẽ được in ra console:
 
