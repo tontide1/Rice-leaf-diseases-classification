@@ -1,0 +1,9 @@
+{
+  "model_name": "ResNet18_BoTLinear_pretrained",
+  "size_mb": 43.27879333496094,
+  "valid_acc": 0.9646827992151733,
+  "valid_f1": 0.964623107930578,
+  "fps": 1118.5330859120488,
+  "num_params": 11345276.0,
+  "ckpt_path": "ResNet18_BoTLinear_pretrained_best.pt"
+}

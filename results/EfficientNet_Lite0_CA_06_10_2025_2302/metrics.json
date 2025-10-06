@@ -1,0 +1,9 @@
+{
+  "model_name": "EfficientNet_Lite0_CA",
+  "size_mb": 20.311172485351562,
+  "valid_acc": 0.22825376062786135,
+  "valid_f1": 0.09291799787007454,
+  "fps": 870.2573457841465,
+  "num_params": 5324452.0,
+  "ckpt_path": "EfficientNet_Lite0_CA_best.pt"
+}

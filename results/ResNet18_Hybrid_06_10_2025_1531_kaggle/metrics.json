@@ -1,0 +1,9 @@
+{
+  "model_name": "ResNet18_Hybrid",
+  "size_mb": 44.43055725097656,
+  "valid_acc": 0.9568345323741008,
+  "valid_f1": 0.956851193282646,
+  "fps": 792.1611630225512,
+  "num_params": 11647204.0,
+  "ckpt_path": "ResNet18_Hybrid_best.pt"
+}

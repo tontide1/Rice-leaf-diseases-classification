@@ -1,0 +1,9 @@
+{
+  "model_name": "ResNet18_BoT_large_batch",
+  "size_mb": 43.33277893066406,
+  "valid_acc": 0.973185088293002,
+  "valid_f1": 0.9732054400642893,
+  "fps": 1069.7907202315093,
+  "num_params": 11359428.0,
+  "ckpt_path": "ResNet18_BoT_large_batch_best.pt"
+}
