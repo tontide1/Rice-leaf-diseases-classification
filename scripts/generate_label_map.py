@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Generate label-to-id mappings from the training split metadata."""
 
 from __future__ import annotations

@@ -3,7 +3,13 @@ data/bacterial_leaf_blight
 data/brown_spot
 data/healthy
 data/leaf_blast
+data_version_1/
+data_version_2/
+
 *zip
+test_all_models.ipynb
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

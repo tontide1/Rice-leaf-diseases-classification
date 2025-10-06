@@ -1,0 +1,9 @@
+{
+  "model_name": "MobileNetV3_Small_BoT",
+  "size_mb": 6.6718292236328125,
+  "valid_acc": 0.9868875086266391,
+  "valid_f1": 0.9868802549406851,
+  "fps": 1083.6151734233192,
+  "num_params": 1748980.0,
+  "ckpt_path": "MobileNetV3_Small_BoT_best.pt"
+}
