@@ -19,7 +19,8 @@ from torch.cuda.amp import GradScaler
 from torch.utils.data import DataLoader, Subset
 
 # Thêm thư mục src vào path
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# Script này nằm ở root của project, nên chỉ cần .parent một lần
+ROOT_DIR = Path(__file__).resolve().parent
 SRC_DIR = ROOT_DIR / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
@@ -30,7 +31,7 @@ from src.utils.data import (  # noqa: E402
     TransformConfig,
     build_datasets,
 )
-from src.utils.metrics import plot_training_history  # noqa: E402
+from src.utils.metrics import plot_history  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -236,7 +237,7 @@ def save_results(output_dir: Path, model_name: str, history: dict, metrics: dict
     
     # Plot training curves
     plot_path = run_dir / "training_plot.png"
-    plot_training_history(history, save_path=str(plot_path))
+    plot_history(history, save_path=str(plot_path))
     print(f"✅ Đã lưu training plot: {plot_path}")
     
     # In ra metrics cuối cùng
@@ -333,7 +334,7 @@ def main() -> None:
     # In số params
     num_params = sum(p.numel() for p in model.parameters())
     num_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f"✅ Model initialized:")
+    print(f" Model initialized:")
     print(f"   - Total params: {num_params:,}")
     print(f"   - Trainable params: {num_trainable:,}")
     
@@ -355,7 +356,7 @@ def main() -> None:
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, T_max=max(1, t_max)
     )
-    print(f"✅ Scheduler: CosineAnnealingLR (T_max={t_max})")
+    print(f" Scheduler: CosineAnnealingLR (T_max={t_max})")
     
     # Gradient scaler cho mixed precision
     scaler = GradScaler(enabled=device.type == "cuda")
@@ -363,11 +364,11 @@ def main() -> None:
     # Early stopping
     patience = args.patience if args.patience > 0 else None
     if patience:
-        print(f"✅ Early stopping: patience={patience}")
+        print(f" Early stopping: patience={patience}")
     
     # Training
     print(f"\n{'='*60}")
-    print("🎯 BẮT ĐẦU TRAINING")
+    print(" BẮT ĐẦU TRAINING")
     print(f"{'='*60}\n")
     
     history, metrics = train_model(
@@ -389,11 +390,11 @@ def main() -> None:
     
     # Lưu kết quả
     print(f"\n{'='*60}")
-    print("💾 LƯU KẾT QUẢ")
+    print(" LƯU KẾT QUẢ")
     print(f"{'='*60}\n")
     save_results(args.output_dir, args.model_name, history, metrics)
     
-    print(f"\n✅ HOÀN THÀNH! Kết quả đã được lưu tại: {args.output_dir / args.model_name}")
+    print(f"\n HOÀN THÀNH! Kết quả đã được lưu tại: {args.output_dir / args.model_name}")
 
 
 if __name__ == "__main__":

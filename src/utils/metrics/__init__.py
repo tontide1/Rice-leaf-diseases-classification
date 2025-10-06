@@ -7,6 +7,9 @@ from .plot import (
     plot_param
 )
 
+# Alias để tương thích với tên cũ
+plot_training_history = plot_history
+
 __all__ = [
     # Benchmark functions
     'accuracy_fscore',
@@ -17,6 +20,7 @@ __all__ = [
     
     # Plot functions
     'plot_history',
+    'plot_training_history',  # Alias
     'plot_confusion_matrix',
     'plot_loss_comparision',
     'plot_accuracy_vs_fps',

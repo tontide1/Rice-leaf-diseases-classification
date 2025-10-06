@@ -1,8 +1,18 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from pathlib import Path
+from typing import Optional, Union
 
-def plot_history(history, title="History Training", figsize=(18, 6)):
+def plot_history(history, title="History Training", figsize=(18, 6), save_path: Optional[Union[str, Path]] = None):
+    """Plot training history với loss và accuracy.
+    
+    Args:
+        history: Dict chứa train_loss, valid_loss, train_acc, valid_acc
+        title: Tiêu đề của plot
+        figsize: Kích thước figure
+        save_path: Đường dẫn lưu plot (nếu None thì chỉ hiển thị)
+    """
     fig, axes = plt.subplots(1, 2, figsize=figsize)
 
     axes[0].plot(history["train_loss"], label="Train loss")
@@ -22,7 +32,14 @@ def plot_history(history, title="History Training", figsize=(18, 6)):
 
     plt.suptitle(title, fontsize=16)
     plt.tight_layout()
-    plt.show()
+    
+    if save_path:
+        save_path = Path(save_path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(save_path, dpi=150, bbox_inches='tight')
+        plt.close()
+    else:
+        plt.show()
 
 def plot_confusion_matrix(cm, class_names, title="Confusion Matrix", normalize=False, figsize=(10, 8)):
     if normalize:
