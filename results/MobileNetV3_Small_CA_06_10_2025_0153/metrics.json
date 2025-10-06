@@ -1,9 +1,0 @@
-{
-  "model_name": "MobileNetV3_Small_CA",
-  "size_mb": 7.3065643310546875,
-  "valid_acc": 0.9917541229385307,
-  "valid_f1": 0.9918331284355448,
-  "fps": 3987.383706766962,
-  "num_params": 1915372.0,
-  "ckpt_path": "MobileNetV3_Small_CA_best.pt"
-}

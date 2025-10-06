@@ -1,0 +1,9 @@
+{
+  "model_name": "MobileNetV3_Small_Vanilla",
+  "size_mb": 5.7989654541015625,
+  "valid_acc": 0.9882275997383911,
+  "valid_f1": 0.9881952863347765,
+  "fps": 1468.1215712010178,
+  "num_params": 1520164.0,
+  "ckpt_path": "MobileNetV3_Small_Vanilla_best.pt"
+}

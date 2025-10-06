@@ -1,0 +1,9 @@
+{
+  "model_name": "MobileNetV3_Small_ECA",
+  "size_mb": 7.068996429443359,
+  "valid_acc": 0.9856115107913669,
+  "valid_f1": 0.9853903029522979,
+  "fps": 1011.4992131231897,
+  "num_params": 1853095.0,
+  "ckpt_path": "MobileNetV3_Small_ECA_best.pt"
+}

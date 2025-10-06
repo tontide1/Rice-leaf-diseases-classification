@@ -1,9 +1,0 @@
-{
-  "model_name": "MobileNetV3_Small_BoT_Linear",
-  "size_mb": 6.6718292236328125,
-  "valid_acc": 0.9917541229385307,
-  "valid_f1": 0.9917270375922677,
-  "fps": -38.093143370720135,
-  "num_params": 1748980.0,
-  "ckpt_path": "MobileNetV3_Small_BoT_Linear_best.pt"
-}
