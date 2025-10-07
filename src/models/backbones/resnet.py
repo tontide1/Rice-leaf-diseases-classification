@@ -49,7 +49,7 @@ class ResNet18_BoT(nn.Module):
 
 class ResNet18_BoTLinear(nn.Module):
     """ResNet18 với BoTLinear (Linear Attention) - Accuracy: 92-94%, Faster"""
-    def __init__(self, num_classes, heads, pretrained=True, dropout: float = 0.0):
+    def __init__(self, num_classes, heads, pretrained=True, dropout: float = 0.0, bottleneck_dim=None):
         super().__init__()
         backbone = timm.create_model(
             "resnet18",
@@ -60,7 +60,7 @@ class ResNet18_BoTLinear(nn.Module):
         self.stem = nn.Sequential(backbone.conv1, backbone.bn1, backbone.act1, backbone.maxpool)
         self.layer1, self.layer2, self.layer3, self.layer4 = backbone.layer1, backbone.layer2, backbone.layer3, backbone.layer4
 
-        self.bot_block = BoTNetBlockLinear(512, 512, heads)
+        self.bot_block = BoTNetBlockLinear(512, 512, heads, bottleneck_dim=bottleneck_dim)
 
         self.pool = backbone.global_pool
         self.dropout = nn.Dropout(dropout) if dropout and dropout > 0 else nn.Identity()
@@ -203,7 +203,7 @@ class ResNet18_Hybrid(nn.Module):
     - Bài toán khó, cần mô hình mạnh
     - Research/Competition
     """
-    def __init__(self, num_classes, heads=4, reduction=32, pretrained=True, dropout: float = 0.0):
+    def __init__(self, num_classes, heads=4, reduction=32, pretrained=True, dropout: float = 0.0, bottleneck_dim=None):
         super().__init__()
         backbone = timm.create_model(
             "resnet18",
@@ -215,7 +215,7 @@ class ResNet18_Hybrid(nn.Module):
         self.layer1, self.layer2, self.layer3, self.layer4 = backbone.layer1, backbone.layer2, backbone.layer3, backbone.layer4
 
         # Hybrid: BoTLinear + CA
-        self.bot_block = BoTNetBlockLinear(512, 512, heads)
+        self.bot_block = BoTNetBlockLinear(512, 512, heads, bottleneck_dim=bottleneck_dim)
         self.ca_block = CABlock(512, 512, reduction=reduction)
 
         self.pool = backbone.global_pool

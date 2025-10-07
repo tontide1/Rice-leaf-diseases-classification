@@ -5,7 +5,8 @@ data/healthy
 data/leaf_blast
 data_version_1/
 data_version_2/
-
+test/
+temp_data/
 *zip
 test_all_models.ipynb
 

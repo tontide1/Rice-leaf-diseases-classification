@@ -27,6 +27,13 @@ from .efficientnet import (
     EfficientNet_Lite0_CA,
 )
 
+from .custom_cnn import (
+    LightweightCNN,
+    TinyPaddyNet,
+    CompactCNN,
+    create_custom_cnn,
+)
+
 __all__ = [
     # MobileNetV3
     'MobileNetV3_Small_BoT',
@@ -44,11 +51,16 @@ __all__ = [
     'ResNet18_Hybrid',
     'ResNet18_MultiScale',
     'ResNet18_Lightweight',
-    # EfficientNet (NEW!)
+    # EfficientNet
     'EfficientNetV2_S_Vanilla',
     'EfficientNetV2_S_CA',
     'EfficientNetV2_S_ECA',
     'EfficientNetV2_S_BoTLinear',
     'EfficientNetV2_S_Hybrid',
     'EfficientNet_Lite0_CA',
+    # Custom CNN (NEW!)
+    'LightweightCNN',
+    'TinyPaddyNet',
+    'CompactCNN',
+    'create_custom_cnn',
 ]

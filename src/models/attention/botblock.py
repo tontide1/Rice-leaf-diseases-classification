@@ -24,9 +24,16 @@ class BoTNetBlock(nn.Module):
         return F.relu(x + residual)
 
 class BoTNetBlockLinear(nn.Module):
-    def __init__(self, c_in, c_out, heads):
+    def __init__(self, c_in, c_out, heads, bottleneck_dim=None):
+        """
+        Args:
+            c_in: Input channels
+            c_out: Output channels
+            heads: Số attention heads
+            bottleneck_dim: Bottleneck dimension (mặc định c_out // 4)
+        """
         super().__init__()
-        c_mid = c_out // 4
+        c_mid = bottleneck_dim if bottleneck_dim is not None else c_out // 4
 
         self.conv1 = nn.Conv2d(c_in, c_mid, 1)
         self.mhla = MultiHeadLinearAttention2D(c_mid, c_mid, heads)
