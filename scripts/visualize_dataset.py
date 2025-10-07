@@ -38,7 +38,7 @@ def load_data():
     }
     df['class_name'] = df['label'].map(class_names)
 
-    print("📊 THÔNG TIN DATASET")
+    print(" THÔNG TIN DATASET")
     print(f"┌{'─' * 50}┐")
     print(f"│ Tổng số samples: {len(df):,} │")
     print(f"│ Số classes: {df.label.nunique()} │")
@@ -60,7 +60,7 @@ def plot_class_distribution(df):
     axes[0, 0].set_xticks(range(len(class_counts)))
     axes[0, 0].set_xticklabels([label.split()[-1] for label in class_counts.index],
                                rotation=45, ha='right')
-    axes[0, 0].set_title('📊 Tổng số samples theo loại bệnh', fontsize=14, fontweight='bold')
+    axes[0, 0].set_title(' Tổng số samples theo loại bệnh', fontsize=14, fontweight='bold')
     axes[0, 0].set_ylabel('Số lượng samples', fontsize=12)
 
     # Thêm số liệu trên bar
@@ -88,7 +88,7 @@ def plot_class_distribution(df):
 
     axes[1, 0].set_xlabel('Loại bệnh')
     axes[1, 0].set_ylabel('Số lượng samples')
-    axes[1, 0].set_title('📈 Phân bố theo Train/Valid/Test', fontsize=14, fontweight='bold')
+    axes[1, 0].set_title(' Phân bố theo Train/Valid/Test', fontsize=14, fontweight='bold')
     axes[1, 0].set_xticks(x)
     axes[1, 0].set_xticklabels([label.split()[-1] for label in class_counts.index],
                                rotation=45, ha='right')
@@ -104,7 +104,7 @@ def plot_class_distribution(df):
 
     plt.tight_layout()
     plt.savefig('data_visualization.png', dpi=300, bbox_inches='tight')
-    print("✅ Đã lưu biểu đồ tổng quan: data_visualization.png")
+    print(" Đã lưu biểu đồ tổng quan: data_visualization.png")
 
     return fig
 
@@ -146,7 +146,7 @@ def plot_sample_images(df, num_samples_per_class=3):
 
 def plot_detailed_statistics(df):
     """Thống kê chi tiết hơn"""
-    print("\n📊 THỐNG KÊ CHI TIẾT")
+    print("\n THỐNG KÊ CHI TIẾT")
 
     # Tính toán thống kê
     total_samples = len(df)
@@ -181,16 +181,16 @@ def plot_detailed_statistics(df):
     print("└" + "─" * 70 + "┘")
 
     # Kiểm tra balance
-    print("\n📊 ĐÁNH GIÁ BALANCE:")
+    print("\n ĐÁNH GIÁ BALANCE:")
     print(f"Standard deviation of class counts: {class_balance.std():.1f}")
     print(f"Coefficient of variation: {class_balance.std()/class_balance.mean()*100:.1f}%")
 
     if class_balance.std() / class_balance.mean() < 0.1:
-        print("✅ Dataset khá cân bằng!")
+        print(" Dataset khá cân bằng!")
     elif class_balance.std() / class_balance.mean() < 0.2:
-        print("⚠️ Dataset hơi mất cân bằng")
+        print(" Dataset hơi mất cân bằng")
     else:
-        print("❌ Dataset mất cân bằng nghiêm trọng!")
+        print(" Dataset mất cân bằng nghiêm trọng!")
 
     return class_balance
 
@@ -209,19 +209,19 @@ def analyze_image_properties(df, sample_size=100):
             continue
 
     if widths and heights:
-        print(f"📐 Kích thước ảnh trung bình: {np.mean(widths):.0f}×{np.mean(heights):.0f}")
-        print(f"📐 Kích thước ảnh trung vị: {np.median(widths):.0f}×{np.median(heights):.0f}")
-        print(f"📐 Min/Max: {min(widths)}×{min(heights)} / {max(widths)}×{max(heights)}")
+        print(f" Kích thước ảnh trung bình: {np.mean(widths):.0f}×{np.mean(heights):.0f}")
+        print(f" Kích thước ảnh trung vị: {np.median(widths):.0f}×{np.median(heights):.0f}")
+        print(f" Min/Max: {min(widths)}×{min(heights)} / {max(widths)}×{max(heights)}")
 
         # Tỷ lệ aspect ratio
         aspect_ratios = [w/h for w, h in zip(widths, heights)]
-        print(f"📐 Aspect ratio trung bình: {np.mean(aspect_ratios):.2f}")
+        print(f" Aspect ratio trung bình: {np.mean(aspect_ratios):.2f}")
     else:
         print("❌ Không thể đọc được thông tin ảnh")
 
 def main():
     """Main visualization function"""
-    print("🚀 BẮT ĐẦU VISUALIZE DATASET")
+    print(" BẮT ĐẦU VISUALIZE DATASET")
     print("=" * 60)
 
     # Load data
@@ -233,8 +233,8 @@ def main():
     stats = plot_detailed_statistics(df)
     analyze_image_properties(df)
 
-    print("\n🎉 HOÀN THÀNH VISUALIZATION!")
-    print("📁 Files đã tạo:")
+    print("\n HOÀN THÀNH VISUALIZATION!")
+    print(" Files đã tạo:")
     print("  • data_visualization.png - Biểu đồ tổng quan")
     print("  • sample_images.png - Sample images")
 
