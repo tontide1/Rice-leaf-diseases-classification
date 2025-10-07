@@ -1,4 +1,4 @@
-# 🌾 Paddy Disease Classification — Dual Language Overview
+# 🌾 Paddy Disease Classification
 
 ## 🇬🇧 English Version
 
