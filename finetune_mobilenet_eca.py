@@ -105,7 +105,6 @@ def get_dataloaders(
         transforms.RandomRotation(degrees=20),  # Tăng rotation
         transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),  # Tăng augmentation + thêm hue
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # Thêm translation
-        transforms.RandomErasing(p=0.2, scale=(0.02, 0.1)),  # Thêm random erasing nhẹ
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                            std=[0.229, 0.224, 0.225])
