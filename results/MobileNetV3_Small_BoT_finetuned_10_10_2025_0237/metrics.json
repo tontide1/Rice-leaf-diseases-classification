@@ -1,0 +1,21 @@
+{
+  "model_name": "MobileNetV3_Small_BoT_finetuned",
+  "size_mb": 6.6718292236328125,
+  "num_params": 1748980,
+  "validation": {
+    "accuracy": 0.8935897435897436,
+    "f1_macro": 0.8933591428609193,
+    "recall_macro": 0.8940003680293709
+  },
+  "test": {
+    "accuracy": 0.9349593495934959,
+    "f1_macro": 0.9347877485971721,
+    "recall_macro": 0.9348603832956514
+  },
+  "training": {
+    "train_acc": 0.9204834605597965
+  },
+  "fps": 2092.2658061270035,
+  "best_epoch": 12,
+  "total_epochs": 15
+}

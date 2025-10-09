@@ -55,4 +55,4 @@ applyTo: '**'
 7. **Output Formatting**
 
    * Print information, results, or statistics using **clear Vietnamese sentences only**.
-   * Do **not** include emojis, icons, or ASCII art.
+   * Do **not** include emojis, icons, or ASCII art. (important !)

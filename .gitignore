@@ -9,8 +9,9 @@ test/
 temp_data/
 *zip
 test_all_models.ipynb
-
-
+dataset_0806/
+models/OurData
+models/Paddy
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

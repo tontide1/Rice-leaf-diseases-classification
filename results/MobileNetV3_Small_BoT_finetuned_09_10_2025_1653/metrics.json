@@ -1,0 +1,19 @@
+{
+  "model_name": "MobileNetV3_Small_BoT_finetuned_09_10_2025_1653",
+  "size_mb": 6.6718292236328125,
+  "valid_acc": 0.8474358974358974,
+  "valid_f1": 0.84759524567782,
+  "fps": 2188.397313523244,
+  "num_params": 1748980,
+  "ckpt_path": "MobileNetV3_Small_BoT_finetuned_09_10_2025_1653_best.pt",
+  "test_acc": 0.9136178861788617,
+  "test_f1": 0.9133184889791288,
+  "test_loss": 0.21585108727459015,
+  "class_names": [
+    "bacterial_leaf_blight",
+    "brown_spot",
+    "healthy",
+    "leaf_blast"
+  ],
+  "checkpoint_source": "models/train 2/MobileNetV3_Small_BoT_best.pt"
+}

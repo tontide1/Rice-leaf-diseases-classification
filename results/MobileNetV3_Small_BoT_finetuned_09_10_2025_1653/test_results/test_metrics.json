@@ -1,0 +1,23 @@
+{
+  "test_loss": 0.21654965310561947,
+  "test_accuracy": 0.9146341463414634,
+  "test_f1_score": 0.9145982972300026,
+  "num_samples": 984,
+  "num_classes": 4,
+  "class_names": [
+    "bacterial_leaf_blight",
+    "brown_spot",
+    "healthy",
+    "leaf_blast"
+  ],
+  "class_distribution": {
+    "bacterial_leaf_blight": 245,
+    "brown_spot": 249,
+    "healthy": 248,
+    "leaf_blast": 242
+  },
+  "checkpoint_path": "results/MobileNetV3_Small_BoT_finetuned_09_10_2025_1653/model_best.pt",
+  "device": "cuda",
+  "batch_size": 32,
+  "image_size": 224
+}
