@@ -20,7 +20,7 @@ import torch.nn as nn
 from torch.cuda.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from torchvision.transforms import functional as F
+from torchvision.transforms import functional as TF
 from tqdm.auto import tqdm
 import numpy as np
 from sklearn.metrics import (
@@ -55,12 +55,17 @@ class SquarePad:
         self.fill = fill
     
     def __call__(self, image):
+        from PIL import Image, ImageOps
+        # Đảm bảo image là PIL Image
+        if not isinstance(image, Image.Image):
+            raise TypeError(f"Expected PIL Image, got {type(image)}")
+        
         w, h = image.size
         max_wh = max(w, h)
         hp = (max_wh - w) // 2
         vp = (max_wh - h) // 2
         padding = (hp, vp, max_wh - w - hp, max_wh - h - vp)
-        return F.pad(image, padding, self.fill, 'constant')
+        return ImageOps.expand(image, border=padding, fill=self.fill)
 
 
 def setup_seed(seed: int = 42):
@@ -401,7 +406,7 @@ def main():
     start_time = time.time()  # Bắt đầu đo thời gian
     
     # ==================== CONFIGURATION ====================
-    PRETRAINED_MODEL_PATH = Path("results/EfficientNet_Lite0_CA_07_10_2025_0048/EfficientNet_Lite0_CA_07_10_2025_0048_best.pt")
+    PRETRAINED_MODEL_PATH = Path("models/train 2/EfficientNet_Lite0_CA_07_10_2025_0048_best.pt")
     DATASET_DIR = Path("dataset_0806")
     OUTPUT_DIR = Path("results") / f"EfficientNet_Lite0_CA_finetuned_{datetime.now().strftime('%d_%m_%Y_%H%M')}"
     

@@ -20,7 +20,7 @@ import torch.nn as nn
 from torch.cuda.amp import GradScaler
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
-from torchvision.transforms import functional as F
+from torchvision.transforms import functional as TF
 from tqdm.auto import tqdm
 import numpy as np
 from sklearn.metrics import (
@@ -55,12 +55,17 @@ class SquarePad:
         self.fill = fill
     
     def __call__(self, image):
+        from PIL import Image, ImageOps
+        # Đảm bảo image là PIL Image
+        if not isinstance(image, Image.Image):
+            raise TypeError(f"Expected PIL Image, got {type(image)}")
+        
         w, h = image.size
         max_wh = max(w, h)
         hp = (max_wh - w) // 2
         vp = (max_wh - h) // 2
         padding = (hp, vp, max_wh - w - hp, max_wh - h - vp)
-        return F.pad(image, padding, self.fill, 'constant')
+        return ImageOps.expand(image, border=padding, fill=self.fill)
 
 
 def setup_seed(seed: int = 42):
