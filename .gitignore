@@ -9,7 +9,7 @@ data_test/
 temp_data/
 *zip
 test_all_models.ipynb
-
+*.pt
 models/OurData
 models/Paddy
 # Byte-compiled / optimized / DLL files
