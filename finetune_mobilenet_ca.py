@@ -399,6 +399,8 @@ def calculate_fps(model: nn.Module, device: torch.device, image_size: int = 224)
 
 
 def main():
+    start_time = time.time()  # Bắt đầu đo thời gian
+
     # ==================== CONFIGURATION ====================
     PRETRAINED_MODEL_PATH = Path("models/temp/MobileNetV3_Small_CA_best.pt")
     DATASET_DIR = Path("dataset_0806")
@@ -660,13 +662,17 @@ def main():
     print("\n" + "="*60)
     print("SAVING RESULTS")
     print("="*60)
-    
+
+    # Tính tổng thời gian chạy
+    total_time = time.time() - start_time
+    print(f"[INFO] Tổng thời gian chạy: {total_time:.2f} giây")
+
     # Lưu history.json
     history_path = OUTPUT_DIR / "history.json"
     with open(history_path, "w", encoding="utf-8") as f:
         json.dump(history, f, indent=2, ensure_ascii=False)
     print(f"[INFO] Đã lưu history.json tại: {history_path}")
-    
+
     # Lưu metrics.json
     metrics = {
         "model_name": "MobileNetV3_Small_CA_finetuned",
@@ -684,27 +690,39 @@ def main():
         },
         "training": {
             "train_acc": history["train_acc"][-1],
-            # "train_f1": "N/A",  # Không tính F1 cho train trong quá trình training
         },
         "fps": fps_value,
         "best_epoch": best_epoch,
-        "total_epochs": len(history["train_loss"])
+        "total_epochs": len(history["train_loss"]),
+        "total_time_seconds": total_time  # Lưu tổng thời gian chạy
     }
-    
+
     metrics_path = OUTPUT_DIR / "metrics.json"
     with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2, ensure_ascii=False)
     print(f"[INFO] Đã lưu metrics.json tại: {metrics_path}")
-    
-    # Lưu classification reports
+
+    # Lưu classification reports với accuracy
+    valid_report_with_acc = {
+        "accuracy": valid_metrics["accuracy"],
+        "f1_macro": valid_metrics["f1_macro"],
+        "recall_macro": valid_metrics["recall_macro"],
+        "classification_report": valid_metrics["report"]
+    }
     valid_report_path = OUTPUT_DIR / "validation_report.json"
     with open(valid_report_path, "w", encoding="utf-8") as f:
-        json.dump(valid_metrics["report"], f, indent=2, ensure_ascii=False)
+        json.dump(valid_report_with_acc, f, indent=2, ensure_ascii=False)
     print(f"[INFO] Đã lưu validation_report.json tại: {valid_report_path}")
     
+    test_report_with_acc = {
+        "accuracy": test_metrics["accuracy"],
+        "f1_macro": test_metrics["f1_macro"],
+        "recall_macro": test_metrics["recall_macro"],
+        "classification_report": test_metrics["report"]
+    }
     test_report_path = OUTPUT_DIR / "test_report.json"
     with open(test_report_path, "w", encoding="utf-8") as f:
-        json.dump(test_metrics["report"], f, indent=2, ensure_ascii=False)
+        json.dump(test_report_with_acc, f, indent=2, ensure_ascii=False)
     print(f"[INFO] Đã lưu test_report.json tại: {test_report_path}")
     
     plot_path = OUTPUT_DIR / "training_plot.png"
