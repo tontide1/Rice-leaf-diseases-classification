@@ -405,7 +405,7 @@ def main():
     start_time = time.time()  # Bắt đầu đo thời gian
     
     # ==================== CONFIGURATION ====================
-    PRETRAINED_MODEL_PATH = Path("models/train 2/MobileNetV3_Small_ECA_best.pt")
+    PRETRAINED_MODEL_PATH = Path("models/temp/MobileNetV3_Small_ECA_best.pt")
     DATASET_DIR = Path("dataset_0806")
     OUTPUT_DIR = Path("results") / f"MobileNetV3_Small_ECA_finetuned_{datetime.now().strftime('%d_%m_%Y_%H%M')}"
     
