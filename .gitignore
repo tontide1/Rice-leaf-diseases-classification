@@ -12,6 +12,10 @@ test_all_models.ipynb
 *.pt
 models/OurData
 models/Paddy
+dataset_1
+data_test
+dataset_0806
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

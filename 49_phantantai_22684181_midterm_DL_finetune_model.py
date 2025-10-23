@@ -1,10 +1,7 @@
 """
-Script fine-tune model MobileNetV3_Small_CA đã train trước trên dataset_0806.
-Dataset đã được chia sẵn thành train/valid/test với 4 classes:
-- bacterial_leaf_blight
-- brown_spot
-- healthy
-- leaf_blast
+DEEPLEARNING - MIDTERM - IUH - GV: ĐẶNG THỊ PHÚC
+File thực hiện finetune model mobilenetv3 small ca
+49 - Phan Tấn Tài - 22684181
 """
 
 import os
@@ -32,7 +29,7 @@ from sklearn.metrics import (
     confusion_matrix
 )
 from PIL import Image
-Image.MAX_IMAGE_PIXELS = None  # Tắt giới hạn cảnh báo
+Image.MAX_IMAGE_PIXELS = None
 
 # Thêm src vào path để import modules
 ROOT_DIR = Path(__file__).resolve().parent
@@ -69,7 +66,6 @@ class SquarePad:
 
 
 def setup_seed(seed: int = 42):
-    """Thiết lập random seed cho reproducibility."""
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
@@ -83,28 +79,15 @@ def get_dataloaders(
     batch_size: int = 32,
     num_workers: int = 4
 ) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    """
-    Tạo DataLoader cho train/valid/test từ dataset_0806.
-    
-    Args:
-        data_dir: Đường dẫn tới thư mục dataset_0806
-        image_size: Kích thước ảnh sau resize
-        batch_size: Batch size
-        num_workers: Số workers cho DataLoader
-        
-    Returns:
-        train_loader, valid_loader, test_loader
-    """
     # Transform cho training: augmentation mạnh hơn để tăng generalization
     train_transform = transforms.Compose([
         # Padding ảnh thành hình vuông để không bị méo
         SquarePad(fill=0),
-        # Resize ảnh vuông về kích thước mong muốn
         transforms.Resize((image_size, image_size)),
         transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomRotation(degrees=15),  # Tăng rotation
-        transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3, hue=0.1),  # Tăng augmentation + thêm hue
-        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),  # Thêm translation
+        transforms.RandomRotation(degrees=10),  # Tăng rotation
+        transforms.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15),
+        # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                            std=[0.229, 0.224, 0.225])
@@ -112,9 +95,7 @@ def get_dataloaders(
     
     # Transform cho validation/test: padding + resize, không có augmentation
     eval_transform = transforms.Compose([
-        # Padding ảnh thành hình vuông để không bị méo
         SquarePad(fill=0),
-        # Resize ảnh vuông về kích thước mong muốn
         transforms.Resize((image_size, image_size)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
@@ -176,26 +157,14 @@ def load_pretrained_model(
     num_classes: int = 4,
     device: torch.device = torch.device("cpu")
 ) -> nn.Module:
-    """
-    Load model pretrained từ checkpoint.
-    
-    Args:
-        checkpoint_path: Đường dẫn tới file .pt
-        num_classes: Số lượng classes
-        device: Device để load model
-        
-    Returns:
-        Model đã load weights
-    """
     print(f"[INFO] Loading pretrained model từ: {checkpoint_path}")
     
     # Tạo model architecture
-    # Sử dụng reduction=16 để khớp với model pretrained
     model = MobileNetV3_Small_CA(
         num_classes=num_classes,
-        reduction=16,  # Khớp với pretrained model
+        reduction=16,
         pretrained=False,
-        dropout=0.2  # Tăng dropout từ 0.1 lên 0.2 để regularization tốt hơn
+        dropout=0.25  # Dropout vừa phải để cân bằng regularization
     )
     
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
@@ -403,29 +372,27 @@ def calculate_fps(model: nn.Module, device: torch.device, image_size: int = 224)
 
 
 def main():
-    start_time = time.time()  # Bắt đầu đo thời gian
+    start_time = time.time() 
 
-    # ==================== CONFIGURATION ====================
     PRETRAINED_MODEL_PATH = Path("models/temp/MobileNetV3_Small_CA_best.pt")
     DATASET_DIR = Path("dataset_0806")
     OUTPUT_DIR = Path("results") / f"MobileNetV3_Small_CA_finetuned_{datetime.now().strftime('%d_%m_%Y_%H%M')}"
     
-    # Hyperparameters - Tối ưu để đạt Valid Acc > 90%
+    # Hyperparameters
     IMAGE_SIZE = 224
     BATCH_SIZE = 32
-    NUM_EPOCHS = 30  # Tăng để có thêm thời gian học
-    PATIENCE = 10  # Tăng patience để không dừng sớm
-    BASE_LR = 8e-6  # Giảm nhẹ để học ổn định hơn
-    HEAD_LR = 3e-4  # Giảm để head không học quá nhanh
-    WEIGHT_DECAY = 2e-2  # Tăng weight decay để regularization
-    NUM_WORKERS = 4  # Tạm thời set 0 để tránh lỗi multiprocessing
+    NUM_EPOCHS = 20  
+    PATIENCE = 7  # Patience cao hơn để tránh dừng sớm trong chu kỳ ngắn
+    BASE_LR = 2e-5  
+    HEAD_LR = 3e-4  
+    WEIGHT_DECAY = 1e-2  
+    LABEL_SMOOTHING = 0.05 
+    NUM_WORKERS = 4
     SEED = 42
     
-    # Tạo output directory
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     print(f"[INFO] Output directory: {OUTPUT_DIR}")
     
-    # Setup seed
     setup_seed(SEED)
     
     # Setup device
@@ -475,7 +442,7 @@ def main():
     print("SETUP TRAINING")
     print("="*60)
     
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(label_smoothing=LABEL_SMOOTHING)
     scaler = GradScaler(enabled=(device.type == "cuda"))
     
     # Tạo param groups: backbone với LR thấp, head với LR cao hơn
@@ -495,18 +462,21 @@ def main():
         {"params": head_params, "lr": HEAD_LR, "weight_decay": WEIGHT_DECAY}
     ])
     
-    # Cosine annealing scheduler
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+    # Cosine annealing phù hợp với 20 epochs
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
         optimizer,
-        T_max=NUM_EPOCHS,
-        eta_min=1e-6
+        T_0=5, 
+        T_mult=2, 
+        eta_min=1e-7
     )
     
     print(f"[INFO] Optimizer: AdamW")
     print(f"[INFO] Base LR (backbone): {BASE_LR}")
     print(f"[INFO] Head LR: {HEAD_LR}")
     print(f"[INFO] Weight decay: {WEIGHT_DECAY}")
-    print(f"[INFO] Scheduler: CosineAnnealingLR")
+    print(f"[INFO] Label smoothing: {LABEL_SMOOTHING}")
+    print(f"[INFO] Scheduler: CosineAnnealingWarmRestarts (T_0=5, T_mult=2)")
+    print(f"[INFO] Epochs: {NUM_EPOCHS}, Patience: {PATIENCE}")
     
     # ==================== TRAINING LOOP ====================
     print("\n" + "="*60)
@@ -552,7 +522,6 @@ def main():
         valid_acc = valid_metrics["accuracy"]
         valid_f1 = valid_metrics["f1_macro"]
         
-        # Update scheduler
         scheduler.step()
         
         # Save history
