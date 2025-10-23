@@ -1,0 +1,44 @@
+{
+  "accuracy": 0.8602564102564103,
+  "f1_macro": 0.8603448180581222,
+  "recall_macro": 0.8611366811608734,
+  "classification_report": {
+    "bacterial_leaf_blight": {
+      "precision": 0.93048128342246,
+      "recall": 0.8877551020408163,
+      "f1-score": 0.9086161879895561,
+      "support": 196.0
+    },
+    "brown_spot": {
+      "precision": 0.8432432432432433,
+      "recall": 0.7839195979899497,
+      "f1-score": 0.8125,
+      "support": 199.0
+    },
+    "healthy": {
+      "precision": 0.9121951219512195,
+      "recall": 0.9790575916230366,
+      "f1-score": 0.9444444444444444,
+      "support": 191.0
+    },
+    "leaf_blast": {
+      "precision": 0.7586206896551724,
+      "recall": 0.7938144329896907,
+      "f1-score": 0.7758186397984886,
+      "support": 194.0
+    },
+    "accuracy": 0.8602564102564103,
+    "macro avg": {
+      "precision": 0.8611350845680237,
+      "recall": 0.8611366811608734,
+      "f1-score": 0.8603448180581222,
+      "support": 780.0
+    },
+    "weighted avg": {
+      "precision": 0.8610018192846076,
+      "recall": 0.8602564102564103,
+      "f1-score": 0.8598384331483958,
+      "support": 780.0
+    }
+  }
+}
